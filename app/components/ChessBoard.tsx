@@ -86,7 +86,7 @@ const ChessBoard: React.FC = () => {
         }
 
         return false;
-    }, [gameState, updateGameState]);
+    }, [gameState.playerMoves, makeRandomAIMove, updateGameState]);
 
     const handlePromotion = useCallback((piece: PieceSymbol) => {
         if (gameState.promotionSquare && gameState.selectedSquare) {
@@ -169,6 +169,7 @@ const ChessBoard: React.FC = () => {
     return (
         <div className="chessboard-container">
             <div className="chessboard-wrapper">
+                <h1>Chess</h1>
                 <Chessboard
                     position={gameState.fen}
                     boardWidth={BOARD_WIDTH}
@@ -181,7 +182,9 @@ const ChessBoard: React.FC = () => {
                         }
                     }}
                 />
+            </div>
                 <div className="status-container">
+                    <h1>Moves from the Game</h1>
                     <StatusBoard
                         playerMoves={gameState.playerMoves}
                         computerMoves={gameState.computerMoves}
@@ -193,7 +196,6 @@ const ChessBoard: React.FC = () => {
                         {gameState.isResetting && <div className="reset-animation"></div>}
                     </div>
                 </div>
-            </div>
         </div>
     );
 };

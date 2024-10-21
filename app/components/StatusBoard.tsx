@@ -13,7 +13,7 @@ const StatusBoard: React.FC<StatusBoardProps> = ({ playerMoves, computerMoves, i
     return (
         <div className="status-board">
             <div className="move-list">
-                <h3>Player Moves</h3>
+                <h3>Player Moves:</h3>
                 <ul>
                     {playerMoves.map((move, index) => (
                         <li key={`player-${index}`}>{move}</li>
@@ -21,7 +21,7 @@ const StatusBoard: React.FC<StatusBoardProps> = ({ playerMoves, computerMoves, i
                 </ul>
             </div>
             <div className="move-list">
-                <h3>Computer Moves</h3>
+                <h3>Computer Moves:</h3>
                 <ul>
                     {computerMoves.map((move, index) => (
                         <li key={`computer-${index}`}>{move}</li>
