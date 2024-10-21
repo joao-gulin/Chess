@@ -2,39 +2,63 @@ import { Chess, Square } from 'chess.js';
 
 class ChessService {
     private game: Chess;
+    private moveHistory: string[];
+    private currentHistoryIndex: number;
 
     constructor() {
         this.game = new Chess();
+        this.moveHistory = [];
+        this.currentHistoryIndex = -1;
     }
 
     getBoard(): string {
         return this.game.fen();
     }
 
-    move(from: string, to: string) {
-        const move = this.game.move({ from, to });
-        return move ? this.game.fen() : null;
+    move(from: Square, to: Square) {
+        const move = this.game.move({ from, to});
+        if (move) {
+            this.updateHistory(this.game.fen());
+            return this.game.fen();
+        }
+        return null;
     }
 
     resetGame() {
-
-        return this.game.reset();
+        this.game.reset();
+        this.moveHistory = [];
+        this.currentHistoryIndex = -1
     }
 
-    getGameStatus() {
-        return this.game.isGameOver() ? 'Game Over' : 'In Progress';
-    }
-
-    getAvaibleMoves(square: string): string[] {
+    getAvaibleMoves(square: Square): Square[] {
         const piece = this.game.get(square);
         if (!piece) return [];
 
-        const moves = this.game.moves({
-            square,
-            verbose: true,
-        });
+        return this.game.moves({ square, verbose: true }).map(move => move.to as Square);
+    }
 
-        return moves.map(move => move.to);
+    getAllAvaibleMoves(): { from: Square; to: Square }[] {
+        return this.game.SQUARES.reduce((moves: { from: Square; to: Square }[], square: Square) => {
+            const availableMoves = this.getAvaibleMoves(square);
+            availableMoves.forEach(to => moves.push({ from: square, to }));
+            return moves;
+        }, []);
+    }
+
+    undoMove(): string | null {
+        if ( this.currentHistoryIndex > 0 ) {
+            this.currentHistoryIndex--;
+            this.game.load(this.moveHistory[this.currentHistoryIndex]);
+            return this.getBoard();
+        }
+        return null;
+    }
+
+
+    private updateHistory(fen: string) {
+        this.moveHistory = this.moveHistory.slice(0, this.currentHistoryIndex + 1);
+        this.moveHistory.push(fen);
+        this.currentHistoryIndex++;
     }
 }
 
