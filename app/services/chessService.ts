@@ -17,7 +17,6 @@ class ChessService {
     }
 
     resetGame() {
-
         return this.game.reset();
     }
 
@@ -35,6 +34,10 @@ class ChessService {
         });
 
         return moves.map(move => move.to);
+    }
+    
+    getGame(): Chess {
+        return this.game;
     }
 }
 

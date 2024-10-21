@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { Chessboard } from 'react-chessboard';
 import { chessService } from "@/app/services/chessService";
-import { Square } from "chess.js";
+import { Square } from 'chess.js'
+import styles from '@/app/styles/ChessBoard.module.css'; // Import your CSS module
 
 const ChessBoard: React.FC = () => {
     const [fen, setFen] = useState<string>('start');
     const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
-    const [avaibleMoves, setAvailableMoves] = useState<Square[]>([]);
+    const [availableMoves, setAvailableMoves] = useState<Square[]>([]);
     const [resetting, setResetting] = useState<boolean>(false);
 
     useEffect(() => {
-        // Set the initial board state using FEN
         setFen(chessService.getBoard());
     }, []);
 
@@ -29,13 +29,25 @@ const ChessBoard: React.FC = () => {
     };
 
     const handleMove = (to: Square) => {
-        if (selectedSquare && avaibleMoves.includes(to)) {
-            // Move the piece and get the new FEN
+        if (selectedSquare && availableMoves.includes(to)) {
             const newFen = chessService.move(selectedSquare, to);
             if (newFen) {
-                setFen(newFen); // Update the board with the new FEN
+                setFen(newFen);
+                setTimeout(() => {
+                    makeRandomAIMove();
+                }, 500);
             }
-            return true; // Return true to indicate the move was successful
+            return true;
+        }
+    };
+
+    const makeRandomAIMove = () => {
+        const possibleMoves = chessService.getGame().moves({ verbose: true });
+        if (possibleMoves.length > 0) {
+            const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+            const randomMove = possibleMoves[randomIndex];
+            chessService.move(randomMove.from, randomMove.to);
+            setFen(chessService.getBoard());
         }
     };
 
@@ -48,7 +60,7 @@ const ChessBoard: React.FC = () => {
             setAvailableMoves([]);
             setResetting(false);
         }, 300);
-    }
+    };
 
     return (
         <div>
@@ -56,23 +68,30 @@ const ChessBoard: React.FC = () => {
                 position={fen}
                 boardWidth={400}
                 customSquareStyles={{
-                    // Highlight available moves
-                    ...(avaibleMoves.reduce((acc, move) => {
-                        acc[move] = { backgroundColor: 'rgba(0, 255, 0, 0.3)' }; // Green highlight for available moves
+                    // Apply styles for available moves
+                    ...(availableMoves.reduce((acc, move) => {
+                        acc[move] = {
+                            backgroundColor: 'transparent', // Make the background transparent
+                            position: 'relative', // Ensure relative positioning for the dot
+                            backgroundImage: 'radial-gradient(circle, rgba(105, 105, 105, 1) 30%, rgba(105, 105, 105, 0) 70%)',
+                            backgroundSize: '20px 20px',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                        };
                         return acc;
                     }, {} as Record<string, React.CSSProperties>)),
-                    ...(selectedSquare ? { [selectedSquare]: { backgroundColor: 'rgba(255, 255, 0, 0.5)' } } : {}), // Yellow highlight for selected piece
+                    ...(selectedSquare ? { [selectedSquare]: { backgroundColor: 'rgba(255, 255, 0, 0.5)', position: 'relative' } } : {}), // Yellow highlight for selected piece
                 }}
                 onSquareClick={(square) => {
-                    if (avaibleMoves.includes(square)) {
+                    if (availableMoves.includes(square)) {
                         handleMove(square);
                     } else {
                         handlePieceClick(square);
                     }
-                }} // Handle clicks on squares
+                }}
             />
             <button onClick={resetGame}>Reset Game</button>
-            {resetting && <div className="reset-animation">Resetting...</div> }
+            {resetting && <div className="reset-animation">Resetting...</div>}
         </div>
     );
 };
