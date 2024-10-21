@@ -1,10 +1,14 @@
-import { Chess, Square } from 'chess.js';
+import { Chess } from 'chess.js';
 
 class ChessService {
     private game: Chess;
 
     constructor() {
         this.game = new Chess();
+    }
+
+    getGame() {
+        return this.game
     }
 
     getBoard(): string {
