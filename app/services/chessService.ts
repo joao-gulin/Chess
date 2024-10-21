@@ -54,6 +54,18 @@ class ChessService {
         return null;
     }
 
+    aiMove(): string | null {
+        const possibleMoves = this.game.moves();
+
+        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+        const move = this.game.move(possibleMoves[randomIndex]);
+        if (move) {
+            this.updateHistory(this.game.fen());
+            return this.game.fen();
+        }
+        return null
+    }
+
 
     private updateHistory(fen: string) {
         this.moveHistory = this.moveHistory.slice(0, this.currentHistoryIndex + 1);

@@ -34,6 +34,12 @@ const ChessBoard: React.FC = () => {
             const newFen = chessService.move(selectedSquare, to);
             if (newFen) {
                 setFen(newFen); // Update the board with the new FEN
+                setTimeout(() => {
+                    const aiFen = chessService.aiMove();
+                    if (aiFen) {
+                        setFen(aiFen);
+                    }
+                }, 1000)
             }
             return true; // Return true to indicate the move was successful
         }
