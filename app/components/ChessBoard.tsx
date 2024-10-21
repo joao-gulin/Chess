@@ -86,7 +86,7 @@ const ChessBoard: React.FC = () => {
         }
 
         return false;
-    }, [gameState.playerMoves, makeRandomAIMove, updateGameState]);
+    }, [gameState.playerMoves, updateGameState]);
 
     const handlePromotion = useCallback((piece: PieceSymbol) => {
         if (gameState.promotionSquare && gameState.selectedSquare) {
@@ -169,7 +169,6 @@ const ChessBoard: React.FC = () => {
     return (
         <div className="chessboard-container">
             <div className="chessboard-wrapper">
-                <h1>Chess</h1>
                 <Chessboard
                     position={gameState.fen}
                     boardWidth={BOARD_WIDTH}
