@@ -2,75 +2,39 @@ import { Chess, Square } from 'chess.js';
 
 class ChessService {
     private game: Chess;
-    private moveHistory: string[];
-    private currentHistoryIndex: number;
 
     constructor() {
         this.game = new Chess();
-        this.moveHistory = [];
-        this.currentHistoryIndex = -1;
     }
 
     getBoard(): string {
         return this.game.fen();
     }
 
-    move(from: Square, to: Square) {
-        const move = this.game.move({ from, to});
-        if (move) {
-            this.updateHistory(this.game.fen());
-            return this.game.fen();
-        }
-        return null;
+    move(from: string, to: string) {
+        const move = this.game.move({ from, to });
+        return move ? this.game.fen() : null;
     }
 
     resetGame() {
-        this.game.reset();
-        this.moveHistory = [];
-        this.currentHistoryIndex = -1
+
+        return this.game.reset();
     }
 
-    getAvaibleMoves(square: Square): Square[] {
+    getGameStatus() {
+        return this.game.isGameOver() ? 'Game Over' : 'In Progress';
+    }
+
+    getAvaibleMoves(square: string): string[] {
         const piece = this.game.get(square);
         if (!piece) return [];
 
-        return this.game.moves({ square, verbose: true }).map(move => move.to as Square);
-    }
+        const moves = this.game.moves({
+            square,
+            verbose: true,
+        });
 
-    getAllAvaibleMoves(): { from: Square; to: Square }[] {
-        return this.game.SQUARES.reduce((moves: { from: Square; to: Square }[], square: Square) => {
-            const availableMoves = this.getAvaibleMoves(square);
-            availableMoves.forEach(to => moves.push({ from: square, to }));
-            return moves;
-        }, []);
-    }
-
-    undoMove(): string | null {
-        if ( this.currentHistoryIndex > 0 ) {
-            this.currentHistoryIndex--;
-            this.game.load(this.moveHistory[this.currentHistoryIndex]);
-            return this.getBoard();
-        }
-        return null;
-    }
-
-    aiMove(): string | null {
-        const possibleMoves = this.game.moves();
-
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const move = this.game.move(possibleMoves[randomIndex]);
-        if (move) {
-            this.updateHistory(this.game.fen());
-            return this.game.fen();
-        }
-        return null
-    }
-
-
-    private updateHistory(fen: string) {
-        this.moveHistory = this.moveHistory.slice(0, this.currentHistoryIndex + 1);
-        this.moveHistory.push(fen);
-        this.currentHistoryIndex++;
+        return moves.map(move => move.to);
     }
 }
 
