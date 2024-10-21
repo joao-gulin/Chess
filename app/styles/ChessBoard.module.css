@@ -1,0 +1,21 @@
+/* ChessBoard.module.css */
+.availableMove {
+    background-color: transparent; /* Make the background transparent */
+    position: relative; /* Ensure relative positioning for the dot */
+}
+
+.availableMove::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px; /* Adjust size as needed */
+    height: 10px; /* Adjust size as needed */
+    background-color: rgba(0, 255, 0, 0.5); /* Semi-transparent green */
+    border-radius: 50%; /* Make it circular */
+    transform: translate(-50%, -50%); /* Center the dot */
+}
+
+.selectedSquare {
+    background-color: rgba(255, 255, 0, 0.5); /* Yellow highlight for selected piece */
+}

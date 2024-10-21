@@ -1,0 +1,41 @@
+.chessboard-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full height of the viewport */
+}
+
+.chessboard-wrapper {
+    display: flex;
+}
+
+.chessboard-wrapper h1 {
+    align-self: center;
+}
+
+h1 {
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.status-container {
+    display: flex;
+    max-height: 400px;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 8px;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: #ccc;
+    margin-left: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    color: black;
+    width: 40vh;
+}
+
+.button-container {
+    margin-top: 10px;
+}
